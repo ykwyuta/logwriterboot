@@ -45,11 +45,17 @@ public class DemoApplication implements CommandLineRunner {
 		}
 		isRunning = true;
 		executor.scheduleAtFixedRate(() -> {
-			System.out.print(counter.incrementAndGet());
+			int current = counter.incrementAndGet();
+			System.out.print(current);
 			System.out.println(":");
+			long startTime = System.currentTimeMillis();
 			for (int i = 0; i < logsPerSecond; i++) {
 				System.out.println(message);
 			}
+			long endTime = System.currentTimeMillis();
+			long elapsedTime = endTime - startTime;
+			System.out.print(current);
+			System.out.println("...Elapsed time: " + elapsedTime + " milliseconds");
 		}, 0, 1, java.util.concurrent.TimeUnit.SECONDS);
         executor.schedule(() -> {
             executor.shutdown();
