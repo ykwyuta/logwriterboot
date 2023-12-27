@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: springboot-app-deployment
+  labels:
+    app: springboot-app
+spec:
+  replicas: 2  # アプリケーションのインスタンス数
+  selector:
+    matchLabels:
+      app: springboot-app
+  template:
+    metadata:
+      labels:
+        app: springboot-app
+    spec:
+      containers:
+      - name: springboot-app
+        image: logapp:latest  # あなたのDockerイメージのパス
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 8080  # Spring Bootアプリケーションがリッスンするポート
+        resources:
+          limits:
+            memory: "512Mi"  # メモリ制限
+            cpu: "500m"  # CPU制限
+        livenessProbe:
+          httpGet:
+            path: /actuator/health  # ヘルスチェックのパス
+            port: 8080
+          initialDelaySeconds: 10
+          periodSeconds: 5
+        readinessProbe:
+          httpGet:
+            path: /actuator/health  # レディネスチェックのパス
+            port: 8080
+          initialDelaySeconds: 5
+          periodSeconds: 5
